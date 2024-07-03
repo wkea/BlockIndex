@@ -1,0 +1,4 @@
+name: BlockIndex
+version: '${project.version}'
+main: sunsky.io.blockindex.BlockIndex
+api-version: '1.20'
