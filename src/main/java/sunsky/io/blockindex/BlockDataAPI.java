@@ -106,9 +106,10 @@ public class BlockDataAPI {
      * @param location 中心坐标
      * @return 最近的同类型方块坐标
      */
-    public Location getNearestBlockLocation(UUID serverUUID, Material material, Location location) {
+    public Location getNearestBlockLocation(UUID serverUUID, Material material, Location location,int range) {
+        Bukkit.getLogger().severe("参数: " + location.toString());
         try {
-            return databaseManager.getNearestBlockLocation(serverUUID, material, location);
+            return databaseManager.getNearestBlockLocation(serverUUID, material, location, range);
         } catch (SQLException e) {
             Bukkit.getLogger().severe("Error getting nearest block location: " + e.getMessage());
             return null;

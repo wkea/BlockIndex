@@ -417,14 +417,22 @@ public class DatabaseManager {
 
 
 
-    public Location getNearestBlockLocation(UUID serverUUID, Material material, Location location) throws SQLException {
+    public Location getNearestBlockLocation(UUID serverUUID, Material material, Location location, int range) throws SQLException {
         if (!isConnected) {
             throw new SQLException("Database is not connected");
         }
 
+        int minX = location.getBlockX() - range;
+        int maxX = location.getBlockX() + range;
+        int minY = location.getBlockY() - range;
+        int maxY = location.getBlockY() + range;
+        int minZ = location.getBlockZ() - range;
+        int maxZ = location.getBlockZ() + range;
+
         String query = "SELECT x, y, z, " +
                 "SQRT(POW(x - ?, 2) + POW(y - ?, 2) + POW(z - ?, 2)) AS distance " +
                 "FROM block_data WHERE uid = ? AND block_type = ? " +
+                "AND x BETWEEN ? AND ? AND y BETWEEN ? AND ? AND z BETWEEN ? AND ? " +
                 "ORDER BY distance ASC LIMIT 1";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, location.getBlockX());
@@ -432,6 +440,12 @@ public class DatabaseManager {
             stmt.setInt(3, location.getBlockZ());
             stmt.setString(4, serverUUID.toString());
             stmt.setString(5, material.toString());
+            stmt.setInt(6, minX);
+            stmt.setInt(7, maxX);
+            stmt.setInt(8, minY);
+            stmt.setInt(9, maxY);
+            stmt.setInt(10, minZ);
+            stmt.setInt(11, maxZ);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 int x = rs.getInt("x");
@@ -443,5 +457,6 @@ public class DatabaseManager {
             }
         }
     }
+
 
 }

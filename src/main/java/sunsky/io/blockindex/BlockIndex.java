@@ -61,6 +61,9 @@ public final class BlockIndex extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         getLogger().info("BLOCKINDEX已启动 可为其引用插件提供方块坐标索引");
     }
+    public BlockDataAPI getBlockDataAPI() {
+        return blockDataAPI;
+    }
     private void initializeTrackedBlocks() {
         FileConfiguration config = getConfig();
         if (!config.contains("trackedBlocks") || config.getStringList("trackedBlocks").isEmpty()) {
