@@ -8,6 +8,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -42,6 +43,7 @@ public final class BlockIndex extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        this.blockDataAPI = new BlockDataAPI(this);
         // 插件启动逻辑
         saveDefaultConfig(); // 保存默认配置文件
 
@@ -151,16 +153,14 @@ public final class BlockIndex extends JavaPlugin implements Listener {
             deleteBlockData(event.getBlock().getWorld().getUID().toString(),loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         }
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockFade(BlockFadeEvent event) {
         if (event.getBlock().getType() == Material.FARMLAND) {
-            if(!event.isCancelled()){
-                deleteBlockData(event.getBlock().getWorld().getUID().toString(),event.getBlock().getX(), event.getBlock().getY(), event.getBlock().getZ());
-            }
-
+            deleteBlockData(event.getBlock().getWorld().getUID().toString(), event.getBlock().getX(), event.getBlock().getY(), event.getBlock().getZ());
         }
     }
-    @EventHandler
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block block = event.getClickedBlock();
